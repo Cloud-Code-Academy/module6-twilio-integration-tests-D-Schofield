@@ -64,29 +64,29 @@ global with sharing class TwilioRestApi {
         String address = req.params.get('Address');
         String label = req.params.get('Label');
         
-        // Debug SMS information
-        System.debug('Received SMS - MessageSID: ' + messageSid);
-        System.debug('From: ' + fromNumber + ', To: ' + toNumber);
-        System.debug('Body: ' + body);
-        System.debug('Media Count: ' + mediaCount);
+        // Log SMS information
+        Logger.info('Received SMS - MessageSID: ' + messageSid).addTag('Twilio');
+        Logger.info('From: ' + fromNumber + ', To: ' + toNumber).addTag('Twilio');
+        Logger.info('Body: ' + body).addTag('Twilio');
+        Logger.info('Media Count: ' + mediaCount).addTag('Twilio');
         
         for (Integer i = 0; i < mediaUrls.size(); i++) {
-            System.debug('Media ' + i + ': ' + mediaUrls[i] + ' (' + mediaTypes[i] + ')');
+            Logger.info('Media ' + i + ': ' + mediaUrls[i] + ' (' + mediaTypes[i] + ')').addTag('Twilio');
         }
         
         if (fromCity != null || fromCountry != null) {
-            System.debug('Sender Location - City: ' + fromCity + ', State: ' + fromState + 
-                         ', Zip: ' + fromZip + ', Country: ' + fromCountry);
+            Logger.info('Sender Location - City: ' + fromCity + ', State: ' + fromState + 
+                         ', Zip: ' + fromZip + ', Country: ' + fromCountry).addTag('Twilio');
         }
         
         if (profileName != null || waId != null) {
-            System.debug('WhatsApp Details - Profile: ' + profileName + ', WaId: ' + waId + 
-                         ', Forwarded: ' + forwarded + ', FrequentlyForwarded: ' + frequentlyForwarded);
+            Logger.info('WhatsApp Details - Profile: ' + profileName + ', WaId: ' + waId + 
+                         ', Forwarded: ' + forwarded + ', FrequentlyForwarded: ' + frequentlyForwarded).addTag('Twilio');
         }
         
         if (latitude != null || longitude != null) {
-            System.debug('WhatsApp Location - Lat: ' + latitude + ', Long: ' + longitude + 
-                         ', Address: ' + address + ', Label: ' + label);
+            Logger.info('WhatsApp Location - Lat: ' + latitude + ', Long: ' + longitude + 
+                         ', Address: ' + address + ', Label: ' + label).addTag('Twilio');
         }
         
         // Return a simple response or TwiML if needed

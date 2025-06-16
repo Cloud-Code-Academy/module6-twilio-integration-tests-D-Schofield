@@ -17,7 +17,10 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      * @param responseBody JSON body to return
      */
     public TwilioCalloutMock(Integer statusCode, String responseBody) {
-        // TODO: Initialize the mock with the provided status code and response body
+        this.statusCode = statusCode;
+        this.responseBody = responseBody;
+        this.throwException = false;
+        this.exceptionMessage = null;
     }
     
     /**
@@ -25,7 +28,10 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      * @param exceptionMessage The exception message to throw
      */
     public TwilioCalloutMock(String exceptionMessage) {
-        // TODO: Initialize the mock to throw an exception with the given message
+        this.throwException = true;
+        this.exceptionMessage = exceptionMessage;
+        this.statusCode = 0;
+        this.responseBody = null;
     }
     
     /**
@@ -33,8 +39,7 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      * @return TwilioCalloutMock An instance that will throw an exception
      */
     public static TwilioCalloutMock createExceptionMock() {
-        // TODO: Return a new instance that will throw an exception with a default message
-        return null;
+        return new TwilioCalloutMock('Mock HTTP callout exception');
     }
     
     /**
@@ -44,9 +49,13 @@ public class TwilioCalloutMock implements HttpCalloutMock {
      * @throws CalloutException If this mock is configured to throw an exception
      */
     public HttpResponse respond(HttpRequest request) {
-        // TODO: Implement the response logic based on the configuration
-        // If throwException is true, throw a CalloutException
-        // Otherwise, create and return an HttpResponse with the appropriate status code and body
-        return null;
+        if (throwException) {
+            throw new CalloutException(exceptionMessage);
+        }
+        
+        HttpResponse response = new HttpResponse();
+        response.setStatusCode(statusCode);
+        response.setBody(responseBody);
+        return response;
     }
 } 

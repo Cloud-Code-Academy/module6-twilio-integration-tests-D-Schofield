@@ -3,12 +3,9 @@
  * Handles sending and retrieving SMS messages via Twilio API
  */
 public with sharing class TwilioService {
-    // Constants for Twilio API
-    private static final String ACCOUNT_SID = ''; // TODO: Add your Twilio Account SID
-    private static final String AUTH_TOKEN = ''; // TODO: Add your Twilio Auth Token
-    private static final String DEFAULT_FROM_NUMBER = ''; // TODO: Add your default sender number
-    private static final String TWILIO_API_URL = 'https://api.twilio.com/2010-04-01/Accounts/' + ACCOUNT_SID;
-
+    
+    @TestVisible
+    private static Twilio_Config__mdt twilioConfig = Twilio_Config__mdt.getInstance('Default');
 
     /**
      * Send an SMS message via Twilio
@@ -22,7 +19,7 @@ public with sharing class TwilioService {
         // Prepare request parameters
         Map<String, String> params = new Map<String, String> {
             'To' => toNumber,
-            'From' => DEFAULT_FROM_NUMBER,
+            'From' => twilioConfig.Default_From_Number__c,
             'Body' => messageBody
         };
         
@@ -54,12 +51,11 @@ public with sharing class TwilioService {
     private static HttpResponse makeHttpRequest(String method, String endpoint, Map<String, String> params) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(TWILIO_API_URL + endpoint);
+        request.setEndpoint(twilioConfig.Base_URL__c + endpoint);
         request.setMethod(method);
         
         // Add Basic Auth header for Twilio authentication
-        // Twilio uses HTTP Basic Auth with Account SID as username and Auth Token as password
-        String authString = ACCOUNT_SID + ':' + AUTH_TOKEN;
+        String authString = twilioConfig.Account_SID__c + ':' + twilioConfig.Auth_Token__c;
         Blob headerValue = Blob.valueOf(authString);
         String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
         request.setHeader('Authorization', authorizationHeader);
@@ -94,19 +90,19 @@ public with sharing class TwilioService {
         }
         
         try {
-            System.debug('Sending request to: ' + request.getEndpoint());
-            System.debug('With method: ' + method);
+            Logger.info('Sending request to: ' + request.getEndpoint()).addTag('Twilio');
+            Logger.info('With method: ' + method).addTag('Twilio');
             if (method != 'GET') {
-                System.debug('Request body: ' + request.getBody());
+                Logger.info('Request body: ' + request.getBody()).addTag('Twilio');
             }
             
             HttpResponse response = http.send(request);
-            System.debug('Response status code: ' + response.getStatusCode());
-            System.debug('Response body: ' + response.getBody());
+            Logger.info('Response status code: ' + response.getStatusCode()).addTag('Twilio');
+            Logger.info('Response body: ' + response.getBody()).addTag('Twilio');
             
             return response;
         } catch (Exception e) {
-            System.debug('Error making HTTP request: ' + e.getMessage());
+            Logger.error('Error making HTTP request: ' + e.getMessage()).addTag('Twilio');
             // Handle exceptions
             HttpResponse errorResponse = new HttpResponse();
             errorResponse.setStatusCode(500);
@@ -126,4 +122,4 @@ public with sharing class TwilioService {
         
         return twilioResponse;
     }
-} 
+}
