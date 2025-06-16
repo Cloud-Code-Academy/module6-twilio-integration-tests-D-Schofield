@@ -5,7 +5,7 @@
 public with sharing class TwilioService {
     
     @TestVisible
-    private static Twilio_Config__mdt CONFIG = Twilio_Config__mdt.getInstance('Default');
+    private static Twilio_Config__mdt twilioConfig = Twilio_Config__mdt.getInstance('Default');
 
     /**
      * Send an SMS message via Twilio
@@ -19,7 +19,7 @@ public with sharing class TwilioService {
         // Prepare request parameters
         Map<String, String> params = new Map<String, String> {
             'To' => toNumber,
-            'From' => CONFIG.Default_From_Number__c,
+            'From' => twilioConfig.Default_From_Number__c,
             'Body' => messageBody
         };
         
@@ -51,11 +51,11 @@ public with sharing class TwilioService {
     private static HttpResponse makeHttpRequest(String method, String endpoint, Map<String, String> params) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(CONFIG.Base_URL__c + endpoint);
+        request.setEndpoint(twilioConfig.Base_URL__c + endpoint);
         request.setMethod(method);
         
         // Add Basic Auth header for Twilio authentication
-        String authString = CONFIG.Account_SID__c + ':' + CONFIG.Auth_Token__c;
+        String authString = twilioConfig.Account_SID__c + ':' + twilioConfig.Auth_Token__c;
         Blob headerValue = Blob.valueOf(authString);
         String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
         request.setHeader('Authorization', authorizationHeader);

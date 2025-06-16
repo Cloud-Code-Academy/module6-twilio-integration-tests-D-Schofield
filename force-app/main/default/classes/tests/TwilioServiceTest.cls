@@ -20,7 +20,7 @@ private class TwilioServiceTest {
         	Base_URL__c = 'https://api.twilio.com/2010-04-01/Accounts/'
         );
         // Set the configuration for testing - must be in same transaction as test
-        TwilioService.CONFIG = testConfig;
+        TwilioService.twilioConfig = testConfig;
     }   
     
     /**
