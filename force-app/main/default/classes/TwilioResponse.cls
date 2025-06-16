@@ -25,7 +25,7 @@ public with sharing class TwilioResponse {
                 return (Map<String, Object>) JSON.deserializeUntyped(this.body);
             }
         } catch (Exception e) {
-            System.debug('Error parsing response as JSON: ' + e.getMessage());
+            Logger.error('Error parsing response as JSON: ' + e.getMessage()).addTag('Twilio');
         }
         return null;
     }
